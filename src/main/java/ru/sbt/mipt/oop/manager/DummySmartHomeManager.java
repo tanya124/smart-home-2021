@@ -1,43 +1,34 @@
 package ru.sbt.mipt.oop.manager;
 
 import ru.sbt.mipt.oop.commands.SensorCommand;
-import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
+import ru.sbt.mipt.oop.commands.handlers.*;
 import ru.sbt.mipt.oop.events.SensorEvent;
-import ru.sbt.mipt.oop.events.handlers.DoorCloseHandler;
-import ru.sbt.mipt.oop.events.handlers.DoorOpenHandler;
-import ru.sbt.mipt.oop.events.handlers.LightOffHandler;
-import ru.sbt.mipt.oop.events.handlers.LightOnHandler;
+import ru.sbt.mipt.oop.events.handlers.*;
 import ru.sbt.mipt.oop.home.SmartHome;
 import ru.sbt.mipt.oop.receiver.EventReceiver;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class DummySmartHomeManager implements SmartHomeManager{
     private SmartHome smartHome;
     private EventReceiver eventReceiver;
     private Queue<SensorCommand> sensorCommandQueue;
-
-    private LightOnHandler lightOnHandler;
-    private LightOffHandler lightOffHandler;
-    private DoorCloseHandler doorCloseHandler;
-    private DoorOpenHandler doorOpenHandler;
-
-    private LightOffCommandHandler lightOffCommandHandler;
+    private ArrayList<EventHandler> eventHandlers;
+    private ArrayList<CommandHandler> commandHandlers;
 
 
-    public DummySmartHomeManager(SmartHome smartHome, EventReceiver eventReceiver) {
+    public DummySmartHomeManager(
+            SmartHome smartHome,
+            EventReceiver eventReceiver,
+            Queue<SensorCommand> sensorCommandQueue,
+            ArrayList<EventHandler> eventHandlers,
+            ArrayList<CommandHandler> commandHandlers
+    ) {
         this.smartHome = smartHome;
         this.eventReceiver = eventReceiver;
-
-        this.lightOnHandler = new LightOnHandler(smartHome, sensorCommandQueue);
-        this.lightOffHandler = new LightOffHandler(smartHome, sensorCommandQueue);
-        this.doorCloseHandler = new DoorCloseHandler(smartHome, sensorCommandQueue);
-        this.doorOpenHandler = new DoorOpenHandler(smartHome, sensorCommandQueue);
-
-        this.lightOffCommandHandler = new LightOffCommandHandler(smartHome);
-
-        sensorCommandQueue = new LinkedList<>();
+        this.sensorCommandQueue = sensorCommandQueue;
+        this.eventHandlers = eventHandlers;
+        this.commandHandlers = commandHandlers;
     }
 
     @Override
@@ -52,32 +43,16 @@ public class DummySmartHomeManager implements SmartHomeManager{
 
     private void handleEvent(SensorEvent event) {
         System.out.println("Got event: " + event);
-        switch (event.getType()) {
-            case LIGHT_ON:
-                lightOnHandler.doAction(event);
-                break;
-
-            case LIGHT_OFF:
-                lightOffHandler.doAction(event);
-                break;
-
-            case DOOR_OPEN:
-                doorOpenHandler.doAction(event);
-                break;
-
-            case DOOR_CLOSED:
-                doorCloseHandler.doAction(event);
-                break;
+        for (EventHandler handler : eventHandlers) {
+            handler.doAction(event);
         }
     }
 
     private void handleCommand() {
         while (!sensorCommandQueue.isEmpty()) {
             SensorCommand command = sensorCommandQueue.poll();
-            switch (command.getType()) {
-                case LIGHT_OFF:
-                    lightOffCommandHandler.doAction(command);
-                    break;
+            for (CommandHandler handler : commandHandlers) {
+                handler.doAction(command);
             }
         }
     }

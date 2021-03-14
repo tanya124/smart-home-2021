@@ -1,7 +1,6 @@
 package ru.sbt.mipt.oop.reader;
 
 import com.google.gson.Gson;
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 
 import java.io.IOException;
 import java.nio.file.Files;
