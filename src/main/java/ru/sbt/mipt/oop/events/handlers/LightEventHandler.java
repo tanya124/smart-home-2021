@@ -6,6 +6,9 @@ import ru.sbt.mipt.oop.home.Light;
 import ru.sbt.mipt.oop.home.Room;
 import ru.sbt.mipt.oop.events.SensorEvent;
 import ru.sbt.mipt.oop.home.SmartHome;
+import ru.sbt.mipt.oop.home.iterator.LightInRoomIterator;
+import ru.sbt.mipt.oop.home.iterator.SmartHomeSmartIterator;
+import ru.sbt.mipt.oop.home.iterator.SmartIterator;
 
 import java.util.Queue;
 
@@ -20,8 +23,12 @@ public class LightEventHandler implements EventHandler {
     @Override
     public void doAction(SensorEvent event) {
         if (event.getType() == SensorEventType.LIGHT_OFF || event.getType() == SensorEventType.LIGHT_ON) {
-            for (Room room : smartHome.getRooms()) {
-                for (Light light : room.getLights()) {
+            SmartHomeSmartIterator smartHomeIterator = smartHome.createIterator();
+            while (smartHomeIterator.hasMore()) {
+                Room room = smartHomeIterator.getNext();
+                LightInRoomIterator lightsIterator = room.createLightInRoomIterator();
+                while (lightsIterator.hasMore()) {
+                    Light light = lightsIterator.getNext();
                     if (light.getId().equals(event.getObjectId())) {
                         if (event.getType() == SensorEventType.LIGHT_OFF) {
                             light.setOn(false);

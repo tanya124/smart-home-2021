@@ -1,11 +1,12 @@
 package ru.sbt.mipt.oop.home;
 
-import ru.sbt.mipt.oop.home.Room;
+import ru.sbt.mipt.oop.home.action.*;
+import ru.sbt.mipt.oop.home.iterator.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class SmartHome {
+public class SmartHome implements Actionable, IterableCollection {
     Collection<Room> rooms;
 
     public SmartHome() {
@@ -22,5 +23,20 @@ public class SmartHome {
 
     public Collection<Room> getRooms() {
         return rooms;
+    }
+
+    @Override
+    public void execute(Action action) {
+        SmartIterator iterator = createIterator();
+        while (iterator.hasMore()) {
+            Room room = iterator.getNext();
+            room.execute(action);
+        }
+    }
+
+
+    @Override
+    public SmartHomeSmartIterator createIterator() {
+        return new SmartHomeSmartIterator(getRooms());
     }
 }

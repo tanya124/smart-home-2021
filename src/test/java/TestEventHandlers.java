@@ -23,18 +23,17 @@ public class TestEventHandlers {
 
     @BeforeEach
     void setUp() {
-        JSONObjectStateReader reader = new JSONObjectStateReader("smart-home-1.js");
+        JSONObjectStateReader reader = new JSONObjectStateReader("/home/tanya/MIPT/podasd/test/smart-home-2021/smart-home-1.js");
         smartHome = reader.readObject(SmartHome.class);
         sensorCommandQueue = new LinkedList<>();
         commandHandlers = new ArrayList<CommandHandler>() {{
             add(new LightOffCommandHandler(smartHome));
         }};
-
-
     }
 
     @Test
     public void testOpenDoorEventHandler(){
+        setUp();
         DoorEventHandler handler = new DoorEventHandler(smartHome, sensorCommandQueue);
         SensorEvent event = new SensorEvent(SensorEventType.DOOR_OPEN, "1");
 
@@ -51,6 +50,7 @@ public class TestEventHandlers {
 
     @Test
     public void testCloseDoorEventHandler(){
+        setUp();
         DoorEventHandler handler = new DoorEventHandler(smartHome, sensorCommandQueue);
         SensorEvent event = new SensorEvent(SensorEventType.DOOR_CLOSED, "3");
 
@@ -67,6 +67,7 @@ public class TestEventHandlers {
 
     @Test
     public void testOnLightEventHandler(){
+        setUp();
         LightEventHandler handler = new LightEventHandler(smartHome, sensorCommandQueue);
         SensorEvent event = new SensorEvent(SensorEventType.LIGHT_ON, "4");
 
@@ -83,8 +84,9 @@ public class TestEventHandlers {
 
     @Test
     public void testOffLightEventHandler(){
+        setUp();
         LightEventHandler handler = new LightEventHandler(smartHome, sensorCommandQueue);
-        SensorEvent event = new SensorEvent(SensorEventType.LIGHT_ON, "3");
+        SensorEvent event = new SensorEvent(SensorEventType.LIGHT_OFF, "3");
 
         handler.doAction(event);
 
@@ -99,6 +101,7 @@ public class TestEventHandlers {
 
     @Test
     public void testHallDoorCloseEventHandler(){
+        setUp();
         HallDoorCloseHandler handler = new HallDoorCloseHandler(smartHome, sensorCommandQueue);
         SensorEvent event = new SensorEvent(SensorEventType.DOOR_CLOSED, "4");
 
