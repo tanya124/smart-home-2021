@@ -1,8 +1,6 @@
 package ru.sbt.mipt.oop.home;
 
-import ru.sbt.mipt.oop.home.action.Action;
-import ru.sbt.mipt.oop.home.action.ActionType;
-import ru.sbt.mipt.oop.home.action.Actionable;
+import ru.sbt.mipt.oop.home.action.*;
 
 public class Door implements Actionable, Device {
     private final String id;

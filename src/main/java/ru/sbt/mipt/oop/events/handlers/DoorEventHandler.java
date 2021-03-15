@@ -1,14 +1,10 @@
 package ru.sbt.mipt.oop.events.handlers;
 
 import ru.sbt.mipt.oop.commands.SensorCommand;
-import ru.sbt.mipt.oop.events.SensorEvent;
-import ru.sbt.mipt.oop.events.SensorEventType;
-import ru.sbt.mipt.oop.home.Door;
-import ru.sbt.mipt.oop.home.Room;
-import ru.sbt.mipt.oop.home.SmartHome;
-import ru.sbt.mipt.oop.home.iterator.DoorInRoomIterator;
-import ru.sbt.mipt.oop.home.iterator.SmartHomeSmartIterator;
-import ru.sbt.mipt.oop.home.iterator.SmartIterator;
+import ru.sbt.mipt.oop.events.*;
+import ru.sbt.mipt.oop.home.*;
+import ru.sbt.mipt.oop.home.iterator.*;
+
 
 import java.util.Queue;
 

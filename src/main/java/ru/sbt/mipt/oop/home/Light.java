@@ -1,8 +1,6 @@
 package ru.sbt.mipt.oop.home;
 
-import ru.sbt.mipt.oop.home.action.Action;
-import ru.sbt.mipt.oop.home.action.ActionType;
-import ru.sbt.mipt.oop.home.action.Actionable;
+import ru.sbt.mipt.oop.home.action.*;
 
 public class Light implements Actionable, Device {
     private boolean isOn;

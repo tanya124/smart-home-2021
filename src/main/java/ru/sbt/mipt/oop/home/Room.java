@@ -1,7 +1,6 @@
 package ru.sbt.mipt.oop.home;
 
-import ru.sbt.mipt.oop.home.action.Action;
-import ru.sbt.mipt.oop.home.action.Actionable;
+import ru.sbt.mipt.oop.home.action.*;
 import ru.sbt.mipt.oop.home.iterator.*;
 
 import java.util.Collection;
