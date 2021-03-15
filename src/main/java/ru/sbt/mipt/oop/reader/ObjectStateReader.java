@@ -1,5 +1,5 @@
 package ru.sbt.mipt.oop.reader;
 
 interface ObjectStateReader {
-    Object readObjectState(Class clazz);
+    <T> T readObject(Class<T> clazz);
 }

@@ -14,7 +14,7 @@ public class JSONObjectStateReader implements ObjectStateReader{
     }
 
     @Override
-    public Object readObjectState(Class clazz){
+    public<T> T readObject(Class<T> clazz){
         try {
             Gson gson = new Gson();
             String json = new String(Files.readAllBytes(Paths.get(filepath)));

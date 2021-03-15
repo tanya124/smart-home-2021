@@ -18,7 +18,7 @@ public class Application {
     public static void main(String... args) throws IOException {
         // считываем состояние дома из файла
         JSONObjectStateReader reader = new JSONObjectStateReader("smart-home-1.js");
-        SmartHome smartHome = (SmartHome) reader.readObjectState(SmartHome.class);
+        SmartHome smartHome = reader.readObject(SmartHome.class);
 
         // создаем приёмник событий
         DummyEventReceiver dummyEventReceiver = new DummyEventReceiver();
@@ -32,11 +32,12 @@ public class Application {
             add(new LightOffEventHandler(smartHome, sensorCommandQueue));
             add(new DoorCloseEventHandler(smartHome, sensorCommandQueue));
             add(new DoorOpenEventHandler(smartHome, sensorCommandQueue));
+            add(new HallDoorCloseHandler(smartHome, sensorCommandQueue));
         }};
 
         // создаём обработчики комманд
         ArrayList<CommandHandler> commandHandlers = new ArrayList<CommandHandler>() {{
-            add(new LightOffCommandCommandHandler(smartHome));
+            add(new LightOffCommandHandler(smartHome));
         }};
 
         DummySmartHomeManager smartHomeManager =

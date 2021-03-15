@@ -6,10 +6,10 @@ import ru.sbt.mipt.oop.home.Light;
 import ru.sbt.mipt.oop.home.Room;
 import ru.sbt.mipt.oop.home.SmartHome;
 
-public class LightOffCommandCommandHandler implements CommandHandler {
+public class LightOffCommandHandler implements CommandHandler {
     private SmartHome smartHome;
 
-    public LightOffCommandCommandHandler(SmartHome smartHome) {
+    public LightOffCommandHandler(SmartHome smartHome) {
         this.smartHome = smartHome;
     }
 
