@@ -9,24 +9,27 @@ import ru.sbt.mipt.oop.home.SmartHome;
 
 import java.util.Queue;
 
-public class LightOnEventHandler implements EventHandler {
+public class LightEventHandler implements EventHandler {
     private SmartHome smartHome;
     private Queue<SensorCommand> sensorCommandQueue;
 
-    public LightOnEventHandler(SmartHome smartHome, Queue<SensorCommand> sensorCommandQueue) {
+    public LightEventHandler(SmartHome smartHome, Queue<SensorCommand> sensorCommandQueue) {
         this.smartHome = smartHome;
         this.sensorCommandQueue = sensorCommandQueue;
     }
-
     @Override
     public void doAction(SensorEvent event) {
-        if (event.getType() == SensorEventType.LIGHT_ON) {
+        if (event.getType() == SensorEventType.LIGHT_OFF || event.getType() == SensorEventType.LIGHT_ON) {
             for (Room room : smartHome.getRooms()) {
                 for (Light light : room.getLights()) {
                     if (light.getId().equals(event.getObjectId())) {
-                        light.setOn(true);
-                        System.out.println("Light " + light.getId() + " in room " + room.getName() + " was turned on.");
-
+                        if (event.getType() == SensorEventType.LIGHT_OFF) {
+                            light.setOn(false);
+                            System.out.println("Light " + light.getId() + " in room " + room.getName() + " was turned off.");
+                        } else {
+                            light.setOn(true);
+                            System.out.println("Light " + light.getId() + " in room " + room.getName() + " was turned on.");
+                        }
                     }
                 }
             }

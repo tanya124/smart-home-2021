@@ -28,10 +28,8 @@ public class Application {
 
         // создаем обработчики событий
         ArrayList<EventHandler> eventHandlers = new ArrayList<EventHandler>() {{
-            add(new LightOnEventHandler(smartHome, sensorCommandQueue));
-            add(new LightOffEventHandler(smartHome, sensorCommandQueue));
-            add(new DoorCloseEventHandler(smartHome, sensorCommandQueue));
-            add(new DoorOpenEventHandler(smartHome, sensorCommandQueue));
+            add(new LightEventHandler(smartHome, sensorCommandQueue));
+            add(new DoorEventHandler(smartHome, sensorCommandQueue));
             add(new HallDoorCloseHandler(smartHome, sensorCommandQueue));
         }};
 
