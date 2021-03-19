@@ -3,6 +3,7 @@ package ru.sbt.mipt.oop.events.handlers;
 import ru.sbt.mipt.oop.commands.SensorCommand;
 import ru.sbt.mipt.oop.events.*;
 import ru.sbt.mipt.oop.home.*;
+import ru.sbt.mipt.oop.home.action.*;
 import ru.sbt.mipt.oop.home.iterator.*;
 
 
@@ -18,23 +19,15 @@ public class DoorEventHandler implements EventHandler {
     }
 
     @Override
-    public void doAction(SensorEvent event) {
-        if (event.getType() == SensorEventType.DOOR_CLOSED || event.getType() == SensorEventType.DOOR_OPEN) {
-            SmartHomeSmartIterator smartHomeIterator = smartHome.createIterator();
-            while (smartHomeIterator.hasMore()) {
-                Room room = smartHomeIterator.getNext();
-                DoorInRoomIterator doorsIterator = room.createDoorInRoomIterator();
-                while (doorsIterator.hasMore()) {
-                    Door door = doorsIterator.getNext();
-                    if (event.getType() == SensorEventType.DOOR_CLOSED) {
-                        door.setOpen(false);
-                        System.out.println("Door " + door.getId() + " in room " + room.getName() + " was closed.");
-                    } else {
-                        door.setOpen(true);
-                        System.out.println("Door " + door.getId() + " in room " + room.getName() + " was opened.");
-                    }
-                }
-            }
+    public void handleEvent(SensorEvent event) {
+        if (event.getType() == SensorEventType.DOOR_OPEN) {
+            OpenDoorAction action = new OpenDoorAction(event.getObjectId());
+            smartHome.execute(action);
+            System.out.println("Door " + event.getObjectId() + " was opened.");
+        } else if (event.getType() == SensorEventType.DOOR_CLOSED) {
+            CloseDoorAction action = new CloseDoorAction(event.getObjectId());
+            smartHome.execute(action);
+            System.out.println("Door " + event.getObjectId() + " was closed.");
         }
     }
 }

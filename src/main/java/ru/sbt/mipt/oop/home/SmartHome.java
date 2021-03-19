@@ -27,6 +27,7 @@ public class SmartHome implements Actionable, IterableCollection {
 
     @Override
     public void execute(Action action) {
+        action.execute(this);
         SmartIterator iterator = createIterator();
         while (iterator.hasMore()) {
             Room room = iterator.getNext();

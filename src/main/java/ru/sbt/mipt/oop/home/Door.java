@@ -26,10 +26,6 @@ public class Door implements Actionable, Device {
 
     @Override
     public void execute(Action action) {
-        if (action.getActionType() == ActionType.DOOR_CLOSED) {
-            setOpen(false);
-        } else if (action.getActionType() == ActionType.DOOR_OPEN) {
-            setOpen(true);
-        }
+        action.execute(this);
     }
 }

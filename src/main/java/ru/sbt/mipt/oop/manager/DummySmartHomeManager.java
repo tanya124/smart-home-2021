@@ -44,7 +44,7 @@ public class DummySmartHomeManager implements SmartHomeManager{
     private void handleEvent(SensorEvent event) {
         System.out.println("Got event: " + event);
         for (EventHandler handler : eventHandlers) {
-            handler.doAction(event);
+            handler.handleEvent(event);
         }
     }
 

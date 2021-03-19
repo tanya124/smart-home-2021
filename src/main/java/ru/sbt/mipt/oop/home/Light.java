@@ -26,10 +26,6 @@ public class Light implements Actionable, Device {
 
     @Override
     public void execute(Action action) {
-        if (action.getActionType() == ActionType.LIGHT_ON) {
-            setOn(true);
-        } else if (action.getActionType() == ActionType.LIGHT_OFF) {
-            setOn(false);
-        }
+        action.execute(this);
     }
 }

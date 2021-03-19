@@ -30,6 +30,7 @@ public class Room implements Actionable, IterableCollection {
 
     @Override
     public void execute(Action action) {
+        action.execute(this);
         SmartIterator iterator = createIterator();
         while (iterator.hasMore()) {
             Device device = iterator.getNext();
@@ -42,11 +43,11 @@ public class Room implements Actionable, IterableCollection {
         return new RoomSmartIterator(doors, lights);
     }
 
-    public DoorInRoomIterator createDoorInRoomIterator() {
+    /*public DoorInRoomIterator createDoorInRoomIterator() {
         return new DoorInRoomIterator(doors);
     }
 
     public LightInRoomIterator createLightInRoomIterator() {
         return new LightInRoomIterator(lights);
-    }
+    }*/
 }

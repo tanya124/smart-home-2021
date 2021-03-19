@@ -6,6 +6,9 @@ import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.events.*;
 import ru.sbt.mipt.oop.events.handlers.*;
 import ru.sbt.mipt.oop.home.*;
+import ru.sbt.mipt.oop.home.iterator.RoomSmartIterator;
+import ru.sbt.mipt.oop.home.iterator.SmartHomeSmartIterator;
+import ru.sbt.mipt.oop.home.iterator.SmartIterator;
 import ru.sbt.mipt.oop.reader.JSONObjectStateReader;
 
 
@@ -27,7 +30,7 @@ public class TestEventHandlers {
         smartHome = reader.readObject(SmartHome.class);
         sensorCommandQueue = new LinkedList<>();
         commandHandlers = new ArrayList<CommandHandler>() {{
-            add(new LightOffCommandHandler(smartHome));
+            add(new LightOffCommandHandler());
         }};
     }
 
@@ -37,12 +40,19 @@ public class TestEventHandlers {
         DoorEventHandler handler = new DoorEventHandler(smartHome, sensorCommandQueue);
         SensorEvent event = new SensorEvent(SensorEventType.DOOR_OPEN, "1");
 
-        handler.doAction(event);
+        handler.handleEvent(event);
 
-        for (Room room : smartHome.getRooms()) {
-            for (Door door : room.getDoors()) {
-                if (door.getId().equals(event.getObjectId())) {
-                    assertTrue(door.isOpen());
+        SmartIterator iterator = smartHome.createIterator();
+        while (iterator.hasMore()) {
+            Room room = iterator.getNext();
+            SmartIterator roomIterator = room.createIterator();
+            while(roomIterator.hasMore()) {
+                Device device = roomIterator.getNext();
+                if (device instanceof Door) {
+                    Door door = (Door) device;
+                    if (door.getId().equals(event.getObjectId())) {
+                        assertTrue(door.isOpen());
+                    }
                 }
             }
         }
@@ -54,12 +64,19 @@ public class TestEventHandlers {
         DoorEventHandler handler = new DoorEventHandler(smartHome, sensorCommandQueue);
         SensorEvent event = new SensorEvent(SensorEventType.DOOR_CLOSED, "3");
 
-        handler.doAction(event);
+        handler.handleEvent(event);
 
-        for (Room room : smartHome.getRooms()) {
-            for (Door door : room.getDoors()) {
-                if (door.getId().equals(event.getObjectId())) {
-                    assertFalse(door.isOpen());
+        SmartIterator iterator = smartHome.createIterator();
+        while (iterator.hasMore()) {
+            Room room = iterator.getNext();
+            SmartIterator roomIterator = room.createIterator();
+            while(roomIterator.hasMore()) {
+                Device device = roomIterator.getNext();
+                if (device instanceof Door) {
+                    Door door = (Door) device;
+                    if (door.getId().equals(event.getObjectId())) {
+                        assertFalse(door.isOpen());
+                    }
                 }
             }
         }
@@ -71,12 +88,19 @@ public class TestEventHandlers {
         LightEventHandler handler = new LightEventHandler(smartHome, sensorCommandQueue);
         SensorEvent event = new SensorEvent(SensorEventType.LIGHT_ON, "4");
 
-        handler.doAction(event);
+        handler.handleEvent(event);
 
-        for (Room room : smartHome.getRooms()) {
-            for (Light light : room.getLights()) {
-                if (light.getId().equals(event.getObjectId())) {
-                    assertTrue(light.isOn());
+        SmartIterator iterator = smartHome.createIterator();
+        while (iterator.hasMore()) {
+            Room room = iterator.getNext();
+            SmartIterator roomIterator = room.createIterator();
+            while(roomIterator.hasMore()) {
+                Device device = roomIterator.getNext();
+                if (device instanceof Light) {
+                    Light light = (Light) device;
+                    if (light.getId().equals(event.getObjectId())) {
+                        assertTrue(light.isOn());
+                    }
                 }
             }
         }
@@ -88,12 +112,19 @@ public class TestEventHandlers {
         LightEventHandler handler = new LightEventHandler(smartHome, sensorCommandQueue);
         SensorEvent event = new SensorEvent(SensorEventType.LIGHT_OFF, "3");
 
-        handler.doAction(event);
+        handler.handleEvent(event);
 
-        for (Room room : smartHome.getRooms()) {
-            for (Light light : room.getLights()) {
-                if (light.getId().equals(event.getObjectId())) {
-                    assertFalse(light.isOn());
+        SmartIterator iterator = smartHome.createIterator();
+        while (iterator.hasMore()) {
+            Room room = iterator.getNext();
+            SmartIterator roomIterator = room.createIterator();
+            while(roomIterator.hasMore()) {
+                Device device = roomIterator.getNext();
+                if (device instanceof Light) {
+                    Light light = (Light) device;
+                    if (light.getId().equals(event.getObjectId())) {
+                        assertFalse(light.isOn());
+                    }
                 }
             }
         }
@@ -105,7 +136,7 @@ public class TestEventHandlers {
         HallDoorCloseHandler handler = new HallDoorCloseHandler(smartHome, sensorCommandQueue);
         SensorEvent event = new SensorEvent(SensorEventType.DOOR_CLOSED, "4");
 
-        handler.doAction(event);
+        handler.handleEvent(event);
         // обработка комманд созданных обрабочиком
         while (!sensorCommandQueue.isEmpty()) {
             SensorCommand command = sensorCommandQueue.poll();
@@ -114,9 +145,16 @@ public class TestEventHandlers {
             }
         }
 
-        for (Room room : smartHome.getRooms()) {
-            for (Light light : room.getLights()) {
-                assertFalse(light.isOn());
+        SmartIterator iterator = smartHome.createIterator();
+        while (iterator.hasMore()) {
+            Room room = iterator.getNext();
+            SmartIterator roomIterator = room.createIterator();
+            while(roomIterator.hasMore()) {
+                Device device = roomIterator.getNext();
+                if (device instanceof Light) {
+                    Light light = (Light) device;
+                    assertFalse(light.isOn());
+                }
             }
         }
     }

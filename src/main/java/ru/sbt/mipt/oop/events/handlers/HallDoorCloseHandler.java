@@ -3,6 +3,7 @@ package ru.sbt.mipt.oop.events.handlers;
 import ru.sbt.mipt.oop.commands.*;
 import ru.sbt.mipt.oop.events.*;
 import ru.sbt.mipt.oop.home.*;
+import ru.sbt.mipt.oop.home.action.LightOffInAllHomeAction;
 import ru.sbt.mipt.oop.home.iterator.*;
 
 import java.util.Queue;
@@ -17,19 +18,10 @@ public class HallDoorCloseHandler implements EventHandler {
     }
 
     @Override
-    public void doAction(SensorEvent event) {
+    public void handleEvent(SensorEvent event) {
         if (event.getType() == SensorEventType.DOOR_CLOSED && isHallDoor(event)) {
-            SmartHomeSmartIterator smartHomeSmartIterator = smartHome.createIterator();
-            while (smartHomeSmartIterator.hasMore()) {
-                Room room = smartHomeSmartIterator.getNext();
-                LightInRoomIterator lightIterator = room.createLightInRoomIterator();
-                while (lightIterator.hasMore()) {
-                    Light light = lightIterator.getNext();
-                    SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
-                    sensorCommandQueue.add(command);
-                }
-
-            }
+            LightOffInAllHomeAction action = new LightOffInAllHomeAction(sensorCommandQueue);
+            smartHome.execute(action);
         }
     }
 
@@ -37,12 +29,15 @@ public class HallDoorCloseHandler implements EventHandler {
         SmartHomeSmartIterator smartHomeSmartIterator = smartHome.createIterator();
         while (smartHomeSmartIterator.hasMore()) {
             Room room = smartHomeSmartIterator.getNext();
-            DoorInRoomIterator doorIterator = room.createDoorInRoomIterator();
-            while (doorIterator.hasMore()) {
-                Door door = doorIterator.getNext();
-                if (door.getId().equals(event.getObjectId())) {
-                    if (room.getName().equals("hall")) {
-                        return true;
+            SmartIterator iterator = room.createIterator();
+            while (iterator.hasMore()) {
+                Device device = iterator.getNext();
+                if (device instanceof Door) {
+                    Door door = (Door) device;
+                    if (door.getId().equals(event.getObjectId())) {
+                        if (room.getName().equals("hall")) {
+                            return true;
+                        }
                     }
                 }
             }

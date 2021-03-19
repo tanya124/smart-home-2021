@@ -35,7 +35,7 @@ public class Application {
 
         // создаём обработчики комманд
         ArrayList<CommandHandler> commandHandlers = new ArrayList<CommandHandler>() {{
-            add(new LightOffCommandHandler(smartHome));
+            add(new LightOffCommandHandler());
         }};
 
         DummySmartHomeManager smartHomeManager =
