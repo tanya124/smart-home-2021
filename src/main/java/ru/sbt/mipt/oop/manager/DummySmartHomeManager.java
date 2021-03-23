@@ -13,16 +13,16 @@ public class DummySmartHomeManager implements SmartHomeManager{
     private SmartHome smartHome;
     private EventReceiver eventReceiver;
     private Queue<SensorCommand> sensorCommandQueue;
-    private ArrayList<EventHandler> eventHandlers;
-    private ArrayList<CommandHandler> commandHandlers;
+    private List<EventHandler> eventHandlers;
+    private List<CommandHandler> commandHandlers;
 
 
     public DummySmartHomeManager(
             SmartHome smartHome,
             EventReceiver eventReceiver,
             Queue<SensorCommand> sensorCommandQueue,
-            ArrayList<EventHandler> eventHandlers,
-            ArrayList<CommandHandler> commandHandlers
+            List<EventHandler> eventHandlers,
+            List<CommandHandler> commandHandlers
     ) {
         this.smartHome = smartHome;
         this.eventReceiver = eventReceiver;

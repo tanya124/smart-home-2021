@@ -9,7 +9,8 @@ import ru.sbt.mipt.oop.reader.JSONObjectStateReader;
 import ru.sbt.mipt.oop.manager.DummySmartHomeManager;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -27,16 +28,18 @@ public class Application {
         Queue<SensorCommand> sensorCommandQueue = new LinkedList<>();
 
         // создаем обработчики событий
-        ArrayList<EventHandler> eventHandlers = new ArrayList<EventHandler>() {{
-            add(new LightEventHandler(smartHome, sensorCommandQueue));
-            add(new DoorEventHandler(smartHome, sensorCommandQueue));
-            add(new HallDoorCloseHandler(smartHome, sensorCommandQueue));
-        }};
+        EventHandler[] _eventHandlers = {
+                new LightEventHandler(smartHome, sensorCommandQueue),
+                new DoorEventHandler(smartHome, sensorCommandQueue),
+                new HallDoorCloseHandler(smartHome, sensorCommandQueue)
+        };
+        List<EventHandler> eventHandlers = Arrays.asList(_eventHandlers);
 
         // создаём обработчики комманд
-        ArrayList<CommandHandler> commandHandlers = new ArrayList<CommandHandler>() {{
-            add(new LightOffCommandHandler());
-        }};
+        CommandHandler[] _commandHandlers = {
+                new LightOffCommandHandler()
+        };
+        List<CommandHandler> commandHandlers = Arrays.asList(_commandHandlers);
 
         DummySmartHomeManager smartHomeManager =
                 new DummySmartHomeManager(smartHome, dummyEventReceiver, sensorCommandQueue, eventHandlers, commandHandlers);

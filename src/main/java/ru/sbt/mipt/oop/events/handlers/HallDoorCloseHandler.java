@@ -3,10 +3,11 @@ package ru.sbt.mipt.oop.events.handlers;
 import ru.sbt.mipt.oop.commands.*;
 import ru.sbt.mipt.oop.events.*;
 import ru.sbt.mipt.oop.home.*;
+import ru.sbt.mipt.oop.home.action.CheckIsHallDoorAction;
 import ru.sbt.mipt.oop.home.action.LightOffInAllHomeAction;
-import ru.sbt.mipt.oop.home.iterator.*;
 
 import java.util.Queue;
+import java.util.zip.CheckedInputStream;
 
 public class HallDoorCloseHandler implements EventHandler {
     private SmartHome smartHome;
@@ -26,22 +27,8 @@ public class HallDoorCloseHandler implements EventHandler {
     }
 
     private boolean isHallDoor(SensorEvent event) {
-        SmartHomeSmartIterator smartHomeSmartIterator = smartHome.createIterator();
-        while (smartHomeSmartIterator.hasMore()) {
-            Room room = smartHomeSmartIterator.getNext();
-            SmartIterator iterator = room.createIterator();
-            while (iterator.hasMore()) {
-                Device device = iterator.getNext();
-                if (device instanceof Door) {
-                    Door door = (Door) device;
-                    if (door.getId().equals(event.getObjectId())) {
-                        if (room.getName().equals("hall")) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        CheckIsHallDoorAction action = new CheckIsHallDoorAction(event.getObjectId());
+        smartHome.execute(action);
+        return action.isHallDoor();
     }
 }

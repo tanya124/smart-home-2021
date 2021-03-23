@@ -1,11 +1,10 @@
 package ru.sbt.mipt.oop.home;
 
 import ru.sbt.mipt.oop.home.action.*;
-import ru.sbt.mipt.oop.home.iterator.*;
 
 import java.util.Collection;
 
-public class Room implements Actionable, IterableCollection {
+public class Room implements Actionable {
     private Collection<Light> lights;
     private Collection<Door> doors;
     private String name;
@@ -16,14 +15,6 @@ public class Room implements Actionable, IterableCollection {
         this.name = name;
     }
 
-    public Collection<Light> getLights() {
-        return lights;
-    }
-
-    public Collection<Door> getDoors() {
-        return doors;
-    }
-
     public String getName() {
         return name;
     }
@@ -31,23 +22,11 @@ public class Room implements Actionable, IterableCollection {
     @Override
     public void execute(Action action) {
         action.execute(this);
-        SmartIterator iterator = createIterator();
-        while (iterator.hasMore()) {
-            Device device = iterator.getNext();
-            device.execute(action);
+        for (Door door : doors) {
+            door.execute(action);
+        }
+        for (Light light : lights) {
+            light.execute(action);
         }
     }
-
-    @Override
-    public SmartIterator createIterator() {
-        return new RoomSmartIterator(doors, lights);
-    }
-
-    /*public DoorInRoomIterator createDoorInRoomIterator() {
-        return new DoorInRoomIterator(doors);
-    }
-
-    public LightInRoomIterator createLightInRoomIterator() {
-        return new LightInRoomIterator(lights);
-    }*/
 }
