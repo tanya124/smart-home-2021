@@ -18,15 +18,18 @@ public class DoorEventHandler implements EventHandler {
     }
 
     @Override
-    public void handleEvent(SensorEvent event) {
-        if (event.getType() == SensorEventType.DOOR_OPEN) {
-            OpenDoorAction action = new OpenDoorAction(event.getObjectId());
-            smartHome.execute(action);
-            System.out.println("Door " + event.getObjectId() + " was opened.");
-        } else if (event.getType() == SensorEventType.DOOR_CLOSED) {
-            CloseDoorAction action = new CloseDoorAction(event.getObjectId());
-            smartHome.execute(action);
-            System.out.println("Door " + event.getObjectId() + " was closed.");
+    public void handleEvent(Event _event) {
+        if (_event instanceof SensorEvent) {
+            SensorEvent event = (SensorEvent) _event;
+            if (event.getType() == EventType.DOOR_OPEN) {
+                OpenDoorAction action = new OpenDoorAction(event.getObjectId());
+                smartHome.execute(action);
+                System.out.println("Door " + event.getObjectId() + " was opened.");
+            } else if (event.getType() == EventType.DOOR_CLOSED) {
+                CloseDoorAction action = new CloseDoorAction(event.getObjectId());
+                smartHome.execute(action);
+                System.out.println("Door " + event.getObjectId() + " was closed.");
+            }
         }
     }
 }

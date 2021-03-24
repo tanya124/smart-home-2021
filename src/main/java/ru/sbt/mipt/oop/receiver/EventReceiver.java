@@ -1,7 +1,7 @@
 package ru.sbt.mipt.oop.receiver;
 
-import ru.sbt.mipt.oop.events.SensorEvent;
+import ru.sbt.mipt.oop.events.Event;
 
 public interface EventReceiver {
-    public SensorEvent getNextSensorEvent();
+    Event getNextEvent();
 }

@@ -7,7 +7,6 @@ import ru.sbt.mipt.oop.home.action.CheckIsHallDoorAction;
 import ru.sbt.mipt.oop.home.action.LightOffInAllHomeAction;
 
 import java.util.Queue;
-import java.util.zip.CheckedInputStream;
 
 public class HallDoorCloseHandler implements EventHandler {
     private SmartHome smartHome;
@@ -19,10 +18,13 @@ public class HallDoorCloseHandler implements EventHandler {
     }
 
     @Override
-    public void handleEvent(SensorEvent event) {
-        if (event.getType() == SensorEventType.DOOR_CLOSED && isHallDoor(event)) {
-            LightOffInAllHomeAction action = new LightOffInAllHomeAction(sensorCommandQueue);
-            smartHome.execute(action);
+    public void handleEvent(Event _event) {
+        if (_event instanceof SensorEvent) {
+            SensorEvent event = (SensorEvent) _event;
+            if (event.getType() == EventType.DOOR_CLOSED && isHallDoor(event)) {
+                LightOffInAllHomeAction action = new LightOffInAllHomeAction(sensorCommandQueue);
+                smartHome.execute(action);
+            }
         }
     }
 

@@ -2,6 +2,8 @@ package ru.sbt.mipt.oop.manager;
 
 import ru.sbt.mipt.oop.commands.SensorCommand;
 import ru.sbt.mipt.oop.commands.handlers.*;
+import ru.sbt.mipt.oop.decorators.EventHandlerDecorator;
+import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.SensorEvent;
 import ru.sbt.mipt.oop.events.handlers.*;
 import ru.sbt.mipt.oop.home.SmartHome;
@@ -13,7 +15,7 @@ public class DummySmartHomeManager implements SmartHomeManager{
     private SmartHome smartHome;
     private EventReceiver eventReceiver;
     private Queue<SensorCommand> sensorCommandQueue;
-    private List<EventHandler> eventHandlers;
+    private List<EventHandlerDecorator> eventHandlers;
     private List<CommandHandler> commandHandlers;
 
 
@@ -21,7 +23,7 @@ public class DummySmartHomeManager implements SmartHomeManager{
             SmartHome smartHome,
             EventReceiver eventReceiver,
             Queue<SensorCommand> sensorCommandQueue,
-            List<EventHandler> eventHandlers,
+            List<EventHandlerDecorator> eventHandlers,
             List<CommandHandler> commandHandlers
     ) {
         this.smartHome = smartHome;
@@ -33,17 +35,17 @@ public class DummySmartHomeManager implements SmartHomeManager{
 
     @Override
     public void runSmartManager() {
-        SensorEvent event = eventReceiver.getNextSensorEvent();
+        Event event = eventReceiver.getNextEvent();
         while (event != null) {
             handleEvent(event);
             handleCommand();
-            event = eventReceiver.getNextSensorEvent();
+            event = eventReceiver.getNextEvent();
         }
     }
 
-    private void handleEvent(SensorEvent event) {
+    private void handleEvent(Event event) {
         System.out.println("Got event: " + event);
-        for (EventHandler handler : eventHandlers) {
+        for (EventHandlerDecorator handler : eventHandlers) {
             handler.handleEvent(event);
         }
     }

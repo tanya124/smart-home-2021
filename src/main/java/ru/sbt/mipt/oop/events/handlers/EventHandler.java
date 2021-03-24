@@ -1,7 +1,7 @@
 package ru.sbt.mipt.oop.events.handlers;
 
-import ru.sbt.mipt.oop.events.SensorEvent;
+import ru.sbt.mipt.oop.events.Event;
 
 public interface EventHandler {
-    void handleEvent(SensorEvent event);
+    void handleEvent(Event event);
 }

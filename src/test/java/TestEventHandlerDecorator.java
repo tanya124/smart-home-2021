@@ -1,47 +1,51 @@
-package ru.sbt.mipt.oop;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import ru.sbt.mipt.oop.commands.SensorCommand;
+import ru.sbt.mipt.oop.commands.handlers.CommandHandler;
+import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.decorators.EventHandlerDecorator;
 import ru.sbt.mipt.oop.events.AlarmEvent;
 import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.EventType;
 import ru.sbt.mipt.oop.events.SensorEvent;
 import ru.sbt.mipt.oop.events.handlers.*;
-import ru.sbt.mipt.oop.commands.handlers.*;
 import ru.sbt.mipt.oop.home.SmartHome;
-import ru.sbt.mipt.oop.receiver.DummyEventReceiver;
-import ru.sbt.mipt.oop.reader.JSONObjectStateReader;
+import ru.sbt.mipt.oop.home.alarm.Alarm;
+import ru.sbt.mipt.oop.home.alarm.AlarmSosState;
 import ru.sbt.mipt.oop.manager.DummySmartHomeManager;
+import ru.sbt.mipt.oop.reader.JSONObjectStateReader;
 import ru.sbt.mipt.oop.receiver.QueueEventReceiver;
 
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
-public class Application {
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    public static void main(String... args) throws IOException {
-        // считываем состояние дома из файла
-        JSONObjectStateReader reader = new JSONObjectStateReader("smart-home-1.js");
-        SmartHome smartHome = reader.readObject(SmartHome.class);
+public class TestEventHandlerDecorator {
+    private SmartHome smartHome;
+    private Queue<SensorCommand> sensorCommandQueue;
+    private List<CommandHandler> commandHandlers;
 
-        // создаем приёмник событий
-        // DummyEventReceiver dummyEventReceiver = new DummyEventReceiver();
+    @BeforeEach
+    void setUp() {
+        JSONObjectStateReader reader = new JSONObjectStateReader("/home/tanya/MIPT/podasd/test/smart-home-2021/smart-home-1.js");
+        smartHome = reader.readObject(SmartHome.class);
+        sensorCommandQueue = new LinkedList<>();
+        CommandHandler[] _commandHandlers = { new LightOffCommandHandler() };
+        commandHandlers = Arrays.asList(_commandHandlers);
+    }
+
+    @Test
+    public void testSosStateAfterActiveState() {
+        setUp();
         Queue<Event> events = new LinkedList<Event>(){{
             add(new AlarmEvent(EventType.ALARM_ACTIVATE, "123"));
             add(new SensorEvent(EventType.DOOR_OPEN, "1"));
-            add(new AlarmEvent(EventType.ALARM_DEACTIVATE, "123"));
-            add(new SensorEvent(EventType.DOOR_CLOSED, "1"));
         }};
         QueueEventReceiver receiver = new QueueEventReceiver(events);
 
-
-        // создаём очередь команд
-        Queue<SensorCommand> sensorCommandQueue = new LinkedList<>();
-
-        // создаем обработчики событий
         EventHandlerDecorator[] _eventHandlers = {
                 new EventHandlerDecorator(new LightEventHandler(smartHome, sensorCommandQueue), smartHome),
                 new EventHandlerDecorator(new DoorEventHandler(smartHome, sensorCommandQueue), smartHome),
@@ -50,17 +54,14 @@ public class Application {
         };
         List<EventHandlerDecorator> eventHandlers = Arrays.asList(_eventHandlers);
 
-        // создаём обработчики комманд
-        CommandHandler[] _commandHandlers = {
-                new LightOffCommandHandler()
-        };
-        List<CommandHandler> commandHandlers = Arrays.asList(_commandHandlers);
-
         DummySmartHomeManager smartHomeManager =
                 new DummySmartHomeManager(smartHome, receiver, sensorCommandQueue, eventHandlers, commandHandlers);
 
 
         // начинаем цикл обработки событий
         smartHomeManager.runSmartManager();
+
+        Alarm alarm = smartHome.getAlarm();
+        assertTrue(alarm.getState() instanceof AlarmSosState);
     }
 }
