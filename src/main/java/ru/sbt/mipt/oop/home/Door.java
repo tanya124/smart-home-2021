@@ -1,6 +1,8 @@
-package ru.sbt.mipt.oop;
+package ru.sbt.mipt.oop.home;
 
-public class Door {
+import ru.sbt.mipt.oop.home.action.*;
+
+public class Door implements Actionable, Device {
     private final String id;
     private boolean isOpen;
 
@@ -9,11 +11,21 @@ public class Door {
         this.id = id;
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
     public void setOpen(boolean open) {
         isOpen = open;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    @Override
+    public void execute(Action action) {
+        action.execute(this);
     }
 }
