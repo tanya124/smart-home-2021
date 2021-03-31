@@ -5,16 +5,9 @@ import ru.sbt.mipt.oop.commands.handlers.CommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.events.AlarmEvent;
 import ru.sbt.mipt.oop.events.EventType;
-import ru.sbt.mipt.oop.events.SensorEvent;
 import ru.sbt.mipt.oop.events.handlers.AlarmHandler;
-import ru.sbt.mipt.oop.events.handlers.DoorEventHandler;
-import ru.sbt.mipt.oop.home.Door;
 import ru.sbt.mipt.oop.home.SmartHome;
-import ru.sbt.mipt.oop.home.action.FindDoorAction;
 import ru.sbt.mipt.oop.home.alarm.Alarm;
-import ru.sbt.mipt.oop.home.alarm.AlarmActiveState;
-import ru.sbt.mipt.oop.home.alarm.AlarmDeactivateState;
-import ru.sbt.mipt.oop.home.alarm.AlarmSosState;
 import ru.sbt.mipt.oop.reader.JSONObjectStateReader;
 
 import java.util.Arrays;
@@ -42,47 +35,49 @@ public class TestAlarmEvent {
     public void testAlarmActivateHandlerWithCorrectCode(){
         setUp();
         AlarmEvent event = new AlarmEvent(EventType.ALARM_ACTIVATE, "123");
-        AlarmHandler handler = new AlarmHandler(smartHome);
+        AlarmHandler handler = new AlarmHandler(smartHome.getAlarm());
         handler.handleEvent(event);
 
         Alarm alarm = smartHome.getAlarm();
-        assertTrue(alarm.getState() instanceof AlarmActiveState);
+        assertTrue(alarm.alarmIsActivate());
     }
 
     @Test
     public void testAlarmActivateHandlerWithIncorrectCode(){
         setUp();
         AlarmEvent event = new AlarmEvent(EventType.ALARM_ACTIVATE, "122");
-        AlarmHandler handler = new AlarmHandler(smartHome);
+        AlarmHandler handler = new AlarmHandler(smartHome.getAlarm());
         handler.handleEvent(event);
 
         Alarm alarm = smartHome.getAlarm();
-        assertTrue(alarm.getState() instanceof AlarmDeactivateState);
+        assertTrue(alarm.alarmIsInactivate());
     }
 
     @Test
     public void testAlarmDeactivateHandlerWithCorrectCode(){
         setUp();
         Alarm alarm = smartHome.getAlarm();
-        alarm.setState(new AlarmActiveState(alarm));
+        alarm.activate("123");
+        //alarm.setState(new AlarmActiveState(alarm));
 
         AlarmEvent event = new AlarmEvent(EventType.ALARM_DEACTIVATE, "123");
-        AlarmHandler handler = new AlarmHandler(smartHome);
+        AlarmHandler handler = new AlarmHandler(smartHome.getAlarm());
         handler.handleEvent(event);
 
-        assertTrue(alarm.getState() instanceof AlarmDeactivateState);
+        assertTrue(alarm.alarmIsInactivate());
     }
 
     @Test
     public void testAlarmDeactivateHandlerWithIncorrectCode(){
         setUp();
         Alarm alarm = smartHome.getAlarm();
-        alarm.setState(new AlarmActiveState(alarm));
+        alarm.activate("123");
+        //alarm.setState(new AlarmActiveState(alarm));
 
         AlarmEvent event = new AlarmEvent(EventType.ALARM_DEACTIVATE, "122");
-        AlarmHandler handler = new AlarmHandler(smartHome);
+        AlarmHandler handler = new AlarmHandler(smartHome.getAlarm());
         handler.handleEvent(event);
 
-        assertTrue(alarm.getState() instanceof AlarmSosState);
+        assertTrue(alarm.alarmIsSos());
     }
 }

@@ -8,19 +8,24 @@ public class AlarmActiveState implements AlarmState {
     }
 
     @Override
-    public void activate(String code) {}
+    public AlarmState activate(String code) { return this;}
 
     @Override
-    public void deactivate(String code) {
-        if (alarm.getCode().equals(code)) {
-            alarm.setState(new AlarmDeactivateState(alarm));
+    public AlarmState deactivate(String code) {
+        if (alarm.isCorrectCode(code)) {
+            return new AlarmInactiveState(alarm);
         } else {
-            sos();
+            return new AlarmSosState(alarm);
         }
     }
 
     @Override
-    public void sos() {
-        alarm.setState(new AlarmSosState(alarm));
+    public AlarmState sos() {
+        return new AlarmSosState(alarm);
+    }
+
+    @Override
+    public void react(AlarmReactor alarmReactor) {
+        alarmReactor.onAlarmActiveState();
     }
 }

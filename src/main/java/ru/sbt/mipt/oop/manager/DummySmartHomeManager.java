@@ -15,7 +15,7 @@ public class DummySmartHomeManager implements SmartHomeManager{
     private SmartHome smartHome;
     private EventReceiver eventReceiver;
     private Queue<SensorCommand> sensorCommandQueue;
-    private List<EventHandlerDecorator> eventHandlers;
+    private List<EventHandler> eventHandlers;
     private List<CommandHandler> commandHandlers;
 
 
@@ -23,7 +23,7 @@ public class DummySmartHomeManager implements SmartHomeManager{
             SmartHome smartHome,
             EventReceiver eventReceiver,
             Queue<SensorCommand> sensorCommandQueue,
-            List<EventHandlerDecorator> eventHandlers,
+            List<EventHandler> eventHandlers,
             List<CommandHandler> commandHandlers
     ) {
         this.smartHome = smartHome;
@@ -45,7 +45,7 @@ public class DummySmartHomeManager implements SmartHomeManager{
 
     private void handleEvent(Event event) {
         System.out.println("Got event: " + event);
-        for (EventHandlerDecorator handler : eventHandlers) {
+        for (EventHandler handler : eventHandlers) {
             handler.handleEvent(event);
         }
     }

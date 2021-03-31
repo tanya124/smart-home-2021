@@ -46,13 +46,13 @@ public class TestEventHandlerDecorator {
         }};
         QueueEventReceiver receiver = new QueueEventReceiver(events);
 
-        EventHandlerDecorator[] _eventHandlers = {
-                new EventHandlerDecorator(new LightEventHandler(smartHome, sensorCommandQueue), smartHome),
-                new EventHandlerDecorator(new DoorEventHandler(smartHome, sensorCommandQueue), smartHome),
-                new EventHandlerDecorator(new HallDoorCloseHandler(smartHome, sensorCommandQueue), smartHome),
-                new EventHandlerDecorator(new AlarmHandler(smartHome), smartHome),
+        EventHandler[] _eventHandlers = {
+                new EventHandlerDecorator(new LightEventHandler(smartHome, sensorCommandQueue), smartHome.getAlarm()),
+                new EventHandlerDecorator(new DoorEventHandler(smartHome, sensorCommandQueue), smartHome.getAlarm()),
+                new EventHandlerDecorator(new HallDoorCloseHandler(smartHome, sensorCommandQueue), smartHome.getAlarm()),
+                new EventHandlerDecorator(new AlarmHandler(smartHome.getAlarm()), smartHome.getAlarm()),
         };
-        List<EventHandlerDecorator> eventHandlers = Arrays.asList(_eventHandlers);
+        List<EventHandler> eventHandlers = Arrays.asList(_eventHandlers);
 
         DummySmartHomeManager smartHomeManager =
                 new DummySmartHomeManager(smartHome, receiver, sensorCommandQueue, eventHandlers, commandHandlers);
@@ -62,6 +62,6 @@ public class TestEventHandlerDecorator {
         smartHomeManager.runSmartManager();
 
         Alarm alarm = smartHome.getAlarm();
-        assertTrue(alarm.getState() instanceof AlarmSosState);
+        assertTrue(alarm.alarmIsSos());
     }
 }

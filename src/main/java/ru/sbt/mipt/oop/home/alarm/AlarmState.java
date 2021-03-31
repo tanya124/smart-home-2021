@@ -2,7 +2,8 @@ package ru.sbt.mipt.oop.home.alarm;
 
 public interface AlarmState {
 
-    void activate(String code);
-    void deactivate(String code);
-    void sos();
+    AlarmState activate(String code);
+    AlarmState deactivate(String code);
+    AlarmState sos();
+    void react(AlarmReactor alarmReactor);
 }

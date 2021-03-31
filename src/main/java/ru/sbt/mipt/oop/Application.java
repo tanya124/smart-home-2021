@@ -42,13 +42,13 @@ public class Application {
         Queue<SensorCommand> sensorCommandQueue = new LinkedList<>();
 
         // создаем обработчики событий
-        EventHandlerDecorator[] _eventHandlers = {
-                new EventHandlerDecorator(new LightEventHandler(smartHome, sensorCommandQueue), smartHome),
-                new EventHandlerDecorator(new DoorEventHandler(smartHome, sensorCommandQueue), smartHome),
-                new EventHandlerDecorator(new HallDoorCloseHandler(smartHome, sensorCommandQueue), smartHome),
-                new EventHandlerDecorator(new AlarmHandler(smartHome), smartHome),
+        EventHandler[] _eventHandlers = {
+                new EventHandlerDecorator(new LightEventHandler(smartHome, sensorCommandQueue), smartHome.getAlarm()),
+                new EventHandlerDecorator(new DoorEventHandler(smartHome, sensorCommandQueue), smartHome.getAlarm()),
+                new EventHandlerDecorator(new HallDoorCloseHandler(smartHome, sensorCommandQueue), smartHome.getAlarm()),
+                new EventHandlerDecorator(new AlarmHandler(smartHome.getAlarm()), smartHome.getAlarm()),
         };
-        List<EventHandlerDecorator> eventHandlers = Arrays.asList(_eventHandlers);
+        List<EventHandler> eventHandlers = Arrays.asList(_eventHandlers);
 
         // создаём обработчики комманд
         CommandHandler[] _commandHandlers = {

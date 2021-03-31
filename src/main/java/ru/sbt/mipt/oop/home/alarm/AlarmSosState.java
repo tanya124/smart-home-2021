@@ -8,15 +8,21 @@ public class AlarmSosState implements AlarmState {
     }
 
     @Override
-    public void activate(String code) {}
+    public AlarmState activate(String code) { return this; }
 
     @Override
-    public void deactivate(String code) {
-        if (alarm.getCode().equals(code)) {
-            alarm.setState(new AlarmDeactivateState(alarm));
+    public AlarmState deactivate(String code) {
+        if (alarm.isCorrectCode(code)) {
+            return new AlarmInactiveState(alarm);
         }
+        return this;
     }
 
     @Override
-    public void sos() {}
+    public AlarmState sos() { return this; }
+
+    @Override
+    public void react(AlarmReactor alarmReactor) {
+        alarmReactor.onAlarmSosState();
+    }
 }

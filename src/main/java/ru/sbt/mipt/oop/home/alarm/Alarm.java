@@ -4,36 +4,40 @@ public class Alarm {
     private AlarmState state;
     private String code;
 
-    public Alarm() {
-        state = new AlarmDeactivateState(this);
-        code = "123";
-    }
-
-    public AlarmState getState() {
-        return state;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
+    public Alarm(String code) {
+        state = new AlarmInactiveState(this);
         this.code = code;
     }
 
-    public void setState(AlarmState state) {
-        this.state = state;
-    }
-
     public void activate(String code) {
-        state.activate(code);
+        state = state.activate(code);
     }
 
     public void deactivate(String code) {
-        state.deactivate(code);
+        state = state.deactivate(code);
     }
 
     public void sos() {
-        state.sos();
+        state = state.sos();
+    }
+
+    public void react(AlarmReactor alarmReactor) {
+        state.react(alarmReactor);
+    }
+
+    public boolean isCorrectCode(String code) {
+        return code.equals(this.code);
+    }
+
+    public boolean alarmIsActivate() {
+        return state instanceof AlarmActiveState;
+    }
+
+    public boolean alarmIsInactivate() {
+        return state instanceof AlarmInactiveState;
+    }
+
+    public boolean alarmIsSos() {
+        return state instanceof AlarmSosState;
     }
 }
