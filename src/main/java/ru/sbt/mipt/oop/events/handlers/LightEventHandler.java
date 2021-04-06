@@ -1,19 +1,15 @@
 package ru.sbt.mipt.oop.events.handlers;
 
-import ru.sbt.mipt.oop.commands.SensorCommand;
 import ru.sbt.mipt.oop.events.*;
 import ru.sbt.mipt.oop.home.*;
 import ru.sbt.mipt.oop.home.action.*;
 
-import java.util.Queue;
 
 public class LightEventHandler implements EventHandler {
     private SmartHome smartHome;
-    private Queue<SensorCommand> sensorCommandQueue;
 
-    public LightEventHandler(SmartHome smartHome, Queue<SensorCommand> sensorCommandQueue) {
+    public LightEventHandler(SmartHome smartHome) {
         this.smartHome = smartHome;
-        this.sensorCommandQueue = sensorCommandQueue;
     }
 
     @Override

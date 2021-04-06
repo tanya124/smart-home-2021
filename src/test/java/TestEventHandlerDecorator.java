@@ -47,8 +47,8 @@ public class TestEventHandlerDecorator {
         QueueEventReceiver receiver = new QueueEventReceiver(events);
 
         EventHandler[] _eventHandlers = {
-                new EventHandlerDecorator(new LightEventHandler(smartHome, sensorCommandQueue), smartHome.getAlarm()),
-                new EventHandlerDecorator(new DoorEventHandler(smartHome, sensorCommandQueue), smartHome.getAlarm()),
+                new EventHandlerDecorator(new LightEventHandler(smartHome), smartHome.getAlarm()),
+                new EventHandlerDecorator(new DoorEventHandler(smartHome), smartHome.getAlarm()),
                 new EventHandlerDecorator(new HallDoorCloseHandler(smartHome, sensorCommandQueue), smartHome.getAlarm()),
                 new EventHandlerDecorator(new AlarmHandler(smartHome.getAlarm()), smartHome.getAlarm()),
         };

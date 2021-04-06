@@ -10,11 +10,9 @@ import java.util.Queue;
 
 public class DoorEventHandler implements EventHandler {
     private SmartHome smartHome;
-    private Queue<SensorCommand> sensorCommandQueue;
 
-    public DoorEventHandler(SmartHome smartHome, Queue<SensorCommand> sensorCommandQueue) {
+    public DoorEventHandler(SmartHome smartHome) {
         this.smartHome = smartHome;
-        this.sensorCommandQueue = sensorCommandQueue;
     }
 
     @Override

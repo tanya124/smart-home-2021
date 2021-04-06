@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import ru.sbt.mipt.oop.adapters.EventHandlerAdapter;
 import ru.sbt.mipt.oop.commands.SensorCommand;
 import ru.sbt.mipt.oop.decorators.EventHandlerDecorator;
+import ru.sbt.mipt.oop.events.EventType;
 import ru.sbt.mipt.oop.events.handlers.EventHandler;
 import ru.sbt.mipt.oop.events.handlers.*;
 import ru.sbt.mipt.oop.home.SmartHome;
@@ -20,16 +21,9 @@ public class ApplicationConfiguration {
     SensorEventsManager sensorEventsManager() {
         SensorEventsManager manager = new SensorEventsManager();
 
-        Queue<SensorCommand> sensorCommandQueue = new LinkedList<>();
-        EventHandler[] eventHandlers = {
-                new EventHandlerDecorator(new LightEventHandler(smartHome(), sensorCommandQueue), smartHome().getAlarm()),
-                new EventHandlerDecorator(new DoorEventHandler(smartHome(), sensorCommandQueue), smartHome().getAlarm()),
-                new EventHandlerDecorator(new HallDoorCloseHandler(smartHome(), sensorCommandQueue), smartHome().getAlarm())
-        };
-
-        manager.registerEventHandler(new EventHandlerAdapter(eventHandlers[0]));
-        manager.registerEventHandler(new EventHandlerAdapter(eventHandlers[1]));
-        manager.registerEventHandler(new EventHandlerAdapter(eventHandlers[2]));
+        manager.registerEventHandler(new EventHandlerAdapter(lightEventHandler(), mapOfSensorEventTypeByCCSSensorEventType()));
+        manager.registerEventHandler(new EventHandlerAdapter(doorEventHandler(), mapOfSensorEventTypeByCCSSensorEventType()));
+        manager.registerEventHandler(new EventHandlerAdapter(hallDoorEventHandler(), mapOfSensorEventTypeByCCSSensorEventType()));
 
         return manager;
     }
@@ -39,5 +33,35 @@ public class ApplicationConfiguration {
         JSONObjectStateReader reader = new JSONObjectStateReader("smart-home-1.js");
         SmartHome smartHome = reader.readObject(SmartHome.class);
         return smartHome;
+    }
+
+    @Bean
+    EventHandler lightEventHandler() {
+        return new EventHandlerDecorator(new LightEventHandler(smartHome()), smartHome().getAlarm());
+    }
+
+    @Bean
+    EventHandler doorEventHandler() {
+        return new EventHandlerDecorator(new DoorEventHandler(smartHome()), smartHome().getAlarm());
+    }
+
+    @Bean
+    EventHandler hallDoorEventHandler() {
+        return new EventHandlerDecorator(new HallDoorCloseHandler(smartHome(), sensorCommandQueue()), smartHome().getAlarm());
+    }
+
+    @Bean
+    Queue<SensorCommand> sensorCommandQueue() {
+        return new LinkedList<>();
+    }
+
+    @Bean(name = "mapEvents")
+    HashMap<String, EventType> mapOfSensorEventTypeByCCSSensorEventType() {
+        return new HashMap<>(){{
+            put("LightIsOn", EventType.LIGHT_ON);
+            put("LightIsOff", EventType.LIGHT_OFF);
+            put("DoorIsOpen", EventType.DOOR_OPEN);
+            put("DoorIsClosed", EventType.DOOR_CLOSED);
+        }};
     }
 }

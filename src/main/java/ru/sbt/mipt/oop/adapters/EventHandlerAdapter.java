@@ -5,31 +5,25 @@ import com.coolcompany.smarthome.events.EventHandler;
 import ru.sbt.mipt.oop.events.EventType;
 import ru.sbt.mipt.oop.events.SensorEvent;
 
+import java.util.HashMap;
+
 public class EventHandlerAdapter implements EventHandler {
     private ru.sbt.mipt.oop.events.handlers.EventHandler handler;
+    private HashMap<String, EventType> mapOfEventType;
 
-    public EventHandlerAdapter(ru.sbt.mipt.oop.events.handlers.EventHandler handler) {
+    public EventHandlerAdapter(
+            ru.sbt.mipt.oop.events.handlers.EventHandler handler,
+            HashMap<String, EventType> mapOfEventType) {
         this.handler = handler;
+        this.mapOfEventType = mapOfEventType;
     }
 
     @Override
     public void handleEvent(CCSensorEvent event) {
         SensorEvent sensorEvent = null;
-        switch (event.getEventType()) {
-            case "LightIsOn":
-                sensorEvent = new SensorEvent(EventType.LIGHT_ON, event.getObjectId());
-                break;
-            case "LightIsOff":
-                sensorEvent = new SensorEvent(EventType.LIGHT_OFF, event.getObjectId());
-                break;
-            case "DoorIsOpen":
-                sensorEvent = new SensorEvent(EventType.DOOR_OPEN, event.getObjectId());;
-                break;
-            case "DoorIsClosed":
-                sensorEvent = new SensorEvent(EventType.DOOR_CLOSED, event.getObjectId());
-                break;
-            default:
-                break;
+        EventType eventType = mapOfEventType.get(event.getEventType());
+        if (eventType != null) {
+            sensorEvent = new SensorEvent(eventType, event.getObjectId());
         }
 
         // события типа DoorIsLocked и DoorIsUnlocked игнорируем

@@ -36,7 +36,7 @@ public class TestEventHandlers {
     @Test
     public void testOpenDoorEventHandler(){
         setUp();
-        DoorEventHandler handler = new DoorEventHandler(smartHome, sensorCommandQueue);
+        DoorEventHandler handler = new DoorEventHandler(smartHome);
         SensorEvent event = new SensorEvent(EventType.DOOR_OPEN, "1");
 
         handler.handleEvent(event);
@@ -50,7 +50,7 @@ public class TestEventHandlers {
     @Test
     public void testCloseDoorEventHandler(){
         setUp();
-        DoorEventHandler handler = new DoorEventHandler(smartHome, sensorCommandQueue);
+        DoorEventHandler handler = new DoorEventHandler(smartHome);
         SensorEvent event = new SensorEvent(EventType.DOOR_CLOSED, "3");
 
         handler.handleEvent(event);
@@ -64,7 +64,7 @@ public class TestEventHandlers {
     @Test
     public void testOnLightEventHandler(){
         setUp();
-        LightEventHandler handler = new LightEventHandler(smartHome, sensorCommandQueue);
+        LightEventHandler handler = new LightEventHandler(smartHome);
         SensorEvent event = new SensorEvent(EventType.LIGHT_ON, "4");
 
         handler.handleEvent(event);
@@ -78,7 +78,7 @@ public class TestEventHandlers {
     @Test
     public void testOffLightEventHandler(){
         setUp();
-        LightEventHandler handler = new LightEventHandler(smartHome, sensorCommandQueue);
+        LightEventHandler handler = new LightEventHandler(smartHome);
         SensorEvent event = new SensorEvent(EventType.LIGHT_OFF, "3");
 
         handler.handleEvent(event);
