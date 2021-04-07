@@ -3,7 +3,7 @@ package ru.sbt.mipt.oop.home.action;
 import ru.sbt.mipt.oop.home.Light;
 import ru.sbt.mipt.oop.home.Room;
 
-public class LightOffInHallRoomAction implements Action {
+public class LightOnInHallRoomAction implements Action {
     private String currentRoomName;
 
     @Override
@@ -16,7 +16,7 @@ public class LightOffInHallRoomAction implements Action {
         if (object instanceof Light) {
             Light light = (Light) object;
             if (currentRoomName.equals("hall")) {
-                light.setOn(false);
+                light.setOn(true);
             }
         }
     }

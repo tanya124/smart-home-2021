@@ -13,6 +13,6 @@ public class TurnOnAllLightCommand implements Command {
     @Override
     public void execute() {
         LightOnAllHomeAction action = new LightOnAllHomeAction();
-        action.execute(smartHome);
+        smartHome.execute(action);
     }
 }

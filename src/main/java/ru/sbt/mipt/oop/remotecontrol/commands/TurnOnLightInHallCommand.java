@@ -1,7 +1,7 @@
 package ru.sbt.mipt.oop.remotecontrol.commands;
 
 import ru.sbt.mipt.oop.home.SmartHome;
-import ru.sbt.mipt.oop.home.action.LightOffInHallRoomAction;
+import ru.sbt.mipt.oop.home.action.LightOnInHallRoomAction;
 
 public class TurnOnLightInHallCommand implements Command {
     private SmartHome smartHome;
@@ -12,7 +12,7 @@ public class TurnOnLightInHallCommand implements Command {
 
     @Override
     public void execute() {
-        LightOffInHallRoomAction action = new LightOffInHallRoomAction();
-        action.execute(smartHome);
+        LightOnInHallRoomAction action = new LightOnInHallRoomAction();
+        smartHome.execute(action);
     }
 }

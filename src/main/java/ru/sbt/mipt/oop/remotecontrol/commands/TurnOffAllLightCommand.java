@@ -12,10 +12,9 @@ public class TurnOffAllLightCommand implements Command {
         this.smartHome = smartHome;
     }
 
-
     @Override
     public void execute() {
         LightOffInAllHomeAction action = new LightOffInAllHomeAction(new LinkedList<>());
-        action.execute(smartHome);
+        smartHome.execute(action);
     }
 }

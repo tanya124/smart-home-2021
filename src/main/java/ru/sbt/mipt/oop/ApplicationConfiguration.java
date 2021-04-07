@@ -10,7 +10,11 @@ import ru.sbt.mipt.oop.events.EventType;
 import ru.sbt.mipt.oop.events.handlers.EventHandler;
 import ru.sbt.mipt.oop.events.handlers.*;
 import ru.sbt.mipt.oop.home.SmartHome;
+import ru.sbt.mipt.oop.home.alarm.Alarm;
 import ru.sbt.mipt.oop.reader.JSONObjectStateReader;
+import ru.sbt.mipt.oop.remotecontrol.RemoteControlImpl;
+import ru.sbt.mipt.oop.remotecontrol.RemoteControlRegistry;
+import ru.sbt.mipt.oop.remotecontrol.commands.*;
 
 import java.util.*;
 
@@ -33,6 +37,11 @@ public class ApplicationConfiguration {
         JSONObjectStateReader reader = new JSONObjectStateReader("smart-home-1.js");
         SmartHome smartHome = reader.readObject(SmartHome.class);
         return smartHome;
+    }
+
+    @Bean
+    Alarm alarm() {
+        return smartHome().getAlarm();
     }
 
     @Bean
@@ -63,5 +72,57 @@ public class ApplicationConfiguration {
             put("DoorIsOpen", EventType.DOOR_OPEN);
             put("DoorIsClosed", EventType.DOOR_CLOSED);
         }};
+    }
+
+    @Bean
+    RemoteControlRegistry remoteControlRegistry() {
+        RemoteControlRegistry registry = new RemoteControlRegistry();
+        registry.registerRemoteControl(remoteControl(), "1");
+        return registry;
+    }
+
+    @Bean
+    RemoteControlImpl remoteControl() {
+        HashMap<String, Command> commandHashMap = new HashMap<>(){{
+            put("A", activateAlarmCommand());
+            put("B", closeHallDoorCommand());
+            put("C", sosAlarmCommand());
+            put("D", turnOffAllLightCommand());
+            put("1", turnOnAllLightCommand());
+            put("2", turnOnLightInHallCommand());
+            put("3", null);
+            put("4", null);
+        }};
+        return new RemoteControlImpl(commandHashMap);
+    }
+
+    @Bean
+    ActivateAlarmCommand activateAlarmCommand() {
+        return new ActivateAlarmCommand(alarm(), "123");
+    }
+
+    @Bean
+    CloseHallDoorCommand closeHallDoorCommand() {
+        return new CloseHallDoorCommand(smartHome());
+    }
+
+    @Bean
+    SosAlarmCommand sosAlarmCommand() {
+        return new SosAlarmCommand(alarm());
+    }
+
+    @Bean
+    TurnOffAllLightCommand turnOffAllLightCommand() {
+        return new TurnOffAllLightCommand(smartHome());
+    }
+
+    @Bean
+    TurnOnLightInHallCommand turnOnLightInHallCommand() {
+        return new TurnOnLightInHallCommand(smartHome());
+    }
+
+    @Bean
+    TurnOnAllLightCommand turnOnAllLightCommand() {
+        return new TurnOnAllLightCommand(smartHome());
     }
 }
